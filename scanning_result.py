@@ -21,7 +21,34 @@ class LanScanning():
         return hosts_under_lan
     
     
+class IcmpPingLanScanning():
+    def __init__(self, network):
+        self.network = network 
 
+    def icmp_ping(self):
+        target_network = self.network
+        hosts_ip = list()
+        hosts_with_ip_mac = {}
+        replied, unreplied = sr(IP(dst=target_network)/ICMP(), timeout=2)
+
+        for sent, received in replied:
+            ip = received.src
+            hosts_ip.append(ip)
+        for ip in hosts_ip:
+            arp_replied, arp_un_replied = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst= ip), timeout=2)
+            for sent, received in arp_replied:
+                mac = received.hwsrc
+                hosts_with_ip_mac[ip] = mac
+
+        return hosts_with_ip_mac
+
+
+        
+
+
+
+
+        
 
 class OuiMap:
 
