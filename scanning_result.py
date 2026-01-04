@@ -8,7 +8,7 @@ class LanScanning():
     def arp_scanning(self):
         target_network = self.network
 
-        replied, un_replied = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst= target_network), timeout=2)
+        replied, un_replied = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst= target_network), timeout=2, verbose=0)
 
         hosts_under_lan = {}
 
@@ -29,7 +29,7 @@ class IcmpPingLanScanning():
         target_network = self.network
         hosts_ip = list()
         hosts_with_ip_mac = {}
-        replied, unreplied = sr(IP(dst=target_network)/ICMP(), timeout=2)
+        replied, unreplied = sr(IP(dst=target_network)/ICMP(), timeout=2, verbose=0)
 
         for sent, received in replied:
             ip = received.src
@@ -41,6 +41,31 @@ class IcmpPingLanScanning():
                 hosts_with_ip_mac[ip] = mac
 
         return hosts_with_ip_mac
+
+
+class TcpSynScan:
+    def __init__(self, value):
+        self.value = value
+    def tcp_syc_scan(self):
+        res, unans = sr( IP(dst=self.value)
+                /TCP(flags="S", dport=(1,500)), timeout = 2, verbose = 0)
+        
+        open_ports = list()
+
+        ip_addr = socket.gethostbyname(self.value)
+
+        for sent, received in res:
+            if received.haslayer(TCP):
+                flags = received[TCP].flags
+
+                
+                if flags & 0x12 == 0x12:
+                    open_ports.append(sent[TCP].dport)
+
+        
+        return open_ports, ip_addr
+        
+        
 
 
         

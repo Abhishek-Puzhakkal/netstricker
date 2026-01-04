@@ -1,7 +1,7 @@
 import argparse
-from input_validater import IpRangeChecker
+from input_validater import IpRangeChecker , ValueChecker
 import platform
-from scanning_result import LanScanning, OuiMap, IcmpPingLanScanning
+from scanning_result import LanScanning, OuiMap, IcmpPingLanScanning, TcpSynScan
 
 os = list()
 
@@ -10,6 +10,8 @@ os.append(platform.system())
 commands = argparse.ArgumentParser()
 
 commands.add_argument("--discover")
+commands.add_argument("--scan")
+commands.add_argument("--port", "-p", "-p-")
 user_input = commands.parse_args()
 
 if user_input.discover:
@@ -42,6 +44,25 @@ if user_input.discover:
 
     else:
         print(f'invalid user input {user_input.discover} is not valid ')
-
+elif user_input.scan:
+    value_checker = ValueChecker(user_input.scan)
+    result_value_checker = value_checker.value_checking_function()
+    if result_value_checker == 'ip':
+        print(f"your given ip is a valid one {user_input.scan}")
+        print(f"port scanning started on {user_input.scan}")
+        tcp_syn_scan_result = TcpSynScan(user_input.scan)
+        scanning_result = tcp_syn_scan_result.tcp_syc_scan()
+        for i in scanning_result:
+            print(f"{user_input.scan} : {i}")
+    elif result_value_checker == "domain name":
+        print(f"the {user_input.scan} is a valid domain name")
+        print(f"port scanning started on {user_input.scan}")
+        tcp_syn_scan_result = TcpSynScan(user_input.scan)
+        scanning_result, ip_addrr = tcp_syn_scan_result.tcp_syc_scan()
+    
+        for i in scanning_result:
+            print(f"{ip_addrr} : {i}")
+    else:
+        print(f"invalid user input {user_input.scan} is not a valid ip or doamin name ")
 
 
