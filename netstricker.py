@@ -1,7 +1,7 @@
 import argparse
 from input_validater import IpRangeChecker , ValueChecker
 import platform
-from scanning_result import LanScanning, OuiMap, IcmpPingLanScanning, TcpSynScan
+from scanning_result import LanScanning, OuiMap, IcmpPingLanScanning, TcpSynScan, BannerGrabing
 
 os = list()
 
@@ -11,7 +11,7 @@ commands = argparse.ArgumentParser()
 
 commands.add_argument("--discover")
 commands.add_argument("--scan")
-commands.add_argument("--port", "-p", "-p-")
+commands.add_argument("--port", "-p", "-p-", nargs=2, type=int)
 user_input = commands.parse_args()
 
 if user_input.discover:
@@ -50,18 +50,22 @@ elif user_input.scan:
     if result_value_checker == 'ip':
         print(f"your given ip is a valid one {user_input.scan}")
         print(f"port scanning started on {user_input.scan}")
-        tcp_syn_scan_result = TcpSynScan(user_input.scan)
-        scanning_result = tcp_syn_scan_result.tcp_syc_scan()
-        for i in scanning_result:
-            print(f"{user_input.scan} : {i}")
+        port_scaning_result = BannerGrabing(user_input.scan, user_input.port)
+        scanning_result, ip_addrr = port_scaning_result.tcp_syc_scan()
+        banners = port_scaning_result.banner_grabing()
+        
+        for i in banners:
+            print(i)
+            
     elif result_value_checker == "domain name":
         print(f"the {user_input.scan} is a valid domain name")
         print(f"port scanning started on {user_input.scan}")
-        tcp_syn_scan_result = TcpSynScan(user_input.scan)
-        scanning_result, ip_addrr = tcp_syn_scan_result.tcp_syc_scan()
-    
-        for i in scanning_result:
-            print(f"{ip_addrr} : {i}")
+        port_scaning_result = BannerGrabing(user_input.scan)
+        scanning_result, ip_addrr = port_scaning_result.tcp_syc_scan()
+        banners = port_scaning_result.banner_grabing()
+        
+        for port, services in banners:
+            print(f"{ip_addrr} : {port} : {services}")
     else:
         print(f"invalid user input {user_input.scan} is not a valid ip or doamin name ")
 

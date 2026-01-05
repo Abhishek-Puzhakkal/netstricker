@@ -1,4 +1,5 @@
 from scapy.all import*
+import socket
 
 class LanScanning():
     def __init__(self, network):
@@ -44,15 +45,18 @@ class IcmpPingLanScanning():
 
 
 class TcpSynScan:
-    def __init__(self, value):
+    def __init__(self, value, ports):
+        self.ports = ports
         self.value = value
+        self.open_ports = []
+        self.ip_addr = None
     def tcp_syc_scan(self):
         res, unans = sr( IP(dst=self.value)
-                /TCP(flags="S", dport=(1,500)), timeout = 2, verbose = 0)
+                /TCP(flags="S", dport=(self.ports)), timeout = 2, verbose = 0)
         
-        open_ports = list()
+        
 
-        ip_addr = socket.gethostbyname(self.value)
+        self.ip_addr = socket.gethostbyname(self.value)
 
         for sent, received in res:
             if received.haslayer(TCP):
@@ -60,20 +64,34 @@ class TcpSynScan:
 
                 
                 if flags & 0x12 == 0x12:
-                    open_ports.append(sent[TCP].dport)
+                   self.open_ports.append(sent[TCP].dport)
 
         
-        return open_ports, ip_addr
+        return self.open_ports, self.ip_addr
+
+class BannerGrabing(TcpSynScan):
+    def __init__(self, value, ports):
+        super().__init__(value, ports)
         
-        
+    def banner_grabing(self):
+        banner = []
+        for port in self.open_ports:
+            try:
+                s = socket.socket()
+                s.settimeout(3)
+                s.connect((self.ip_addr, port))
+                banner.append((port, s.recv(1024).decode(errors="ignore").strip()))
+            except Exception:
+                pass
+            finally:
+                s.close()
+
+        return banner
 
 
         
 
 
-
-
-        
 
 class OuiMap:
 
