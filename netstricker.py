@@ -64,8 +64,8 @@ elif user_input.scan:
         scanning_result, ip_addrr = port_scaning_result.tcp_syc_scan()
         banners = port_scaning_result.banner_grabing()
         
-        for port, services in banners:
-            print(f"{ip_addrr} : {port} : {services}")
+        for ports in scanning_result:
+            print(f"{ip_addrr} : {ports}")
     else:
         print(f"invalid user input {user_input.scan} is not a valid ip or doamin name ")
 
