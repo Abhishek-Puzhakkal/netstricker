@@ -60,7 +60,7 @@ elif user_input.scan:
     elif result_value_checker == "domain name":
         print(f"the {user_input.scan} is a valid domain name")
         print(f"port scanning started on {user_input.scan}")
-        port_scaning_result = BannerGrabing(user_input.scan)
+        port_scaning_result = BannerGrabing(user_input.scan, user_input.port)
         scanning_result, ip_addrr = port_scaning_result.tcp_syc_scan()
         banners = port_scaning_result.banner_grabing()
         
