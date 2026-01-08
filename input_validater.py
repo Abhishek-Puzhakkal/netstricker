@@ -23,7 +23,7 @@ class ValueChecker:
             pass
 
         try:
-            socket.gethostbyname(self.value)
+            socket.gethostname(self.value)
             return "domain name"
         except socket.gaierror:
             pass

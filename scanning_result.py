@@ -6,7 +6,7 @@ class LanScanning():
 
         self.network = network
     
-    def arp_scanning(self):
+    def arp_scanning(self) -> dict:
         target_network = self.network
 
         replied, un_replied = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst= target_network), timeout=2, verbose=0)
@@ -26,7 +26,7 @@ class IcmpPingLanScanning():
     def __init__(self, network):
         self.network = network 
 
-    def icmp_ping(self):
+    def icmp_ping(self) -> dict :
         target_network = self.network
         hosts_ip = list()
         hosts_with_ip_mac = {}
@@ -50,7 +50,7 @@ class TcpSynScan:
         self.value = value
         self.open_ports = []
         self.ip_addr = None
-    def tcp_syc_scan(self):
+    def tcp_syc_scan(self) -> tuple[list[int], str]:
         res, unans = sr( IP(dst=self.value)
                 /TCP(flags="S", dport=(self.ports)), timeout = 2, verbose = 0)
         
@@ -73,7 +73,7 @@ class BannerGrabing(TcpSynScan):
     def __init__(self, value, ports):
         super().__init__(value, ports)
         
-    def banner_grabing(self):
+    def banner_grabing(self) -> list:
         banner = []
         for port in self.open_ports:
             try:
@@ -88,15 +88,10 @@ class BannerGrabing(TcpSynScan):
 
         return banner
 
-
-        
-
-
-
 class OuiMap:
 
     @staticmethod
-    def load_oui_database(file_path="oui.txt"):
+    def load_oui_database(file_path="oui.txt") -> dict:
         oui_database = {}
 
         with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
@@ -108,5 +103,49 @@ class OuiMap:
                     oui_database[oui] = vendor
 
         return oui_database
+    
 
+class TcpConnectScan:
+    def __init__(self, ip:str, ports: list[int]):
+        self.ip = ip
+        self.starting_point = ports[0]
+        self.ending_point = ports[1]
+    
+    def tcp_connect_scan(self) -> list[int, int] :
+        open_ports = list()
+        for port in range(self.starting_point, self.ending_point+1):
+            try:
+                s = socket.socket()
+                s.settimeout(2)
+                result = s.connect_ex(self.ip, port)
+                if result == 0:
+                    open_ports.append(port)
+            except Exception:
+                pass
+            finally:
+                s.close()
+        
+        return open_ports
 
+class CommonPorts:
+    def __init__(self):
+        self.common_ports = {
+            7:"Echo", 20:"FTP data", 21:"FTP", 22:"SSH", 23:"Telnet",
+            25:"SMTP", 53:"DNS", 69:"TFTP", 80:"HTTP", 88:"Kerberos", 
+            102:"lso-tsap", 110:"POP3", 135:"Microsoft-EPMAP", 137:"NetBIOS-ns", 
+            139:"NetBIOS-ssn", 143:"IMAP4", 381:"HP Openview", 383:"HP Openview", 
+            443:"HTTPS", 464:"kerberos", 465:"SMTPS", 587:"SMTP", 593:"Microsoft DCOM", 
+            636:"LDAP over SSL", 691:"MS Exchange", 902:"VMware Server", 989:"FTP over ssl", 
+            990:"FTP over ssl", 993:"IMAP4 over SSL" , 995:"POP3 over SSL", 1025:"Microsoft RPC", 
+            1194:"OpenVPN", 1337:"WASTE", 1589:"Cisco VQP",1725:"Stem", 2082:"cPANEL", 
+            2083:"radsec, cPanel",2483:"Oracle DB", 2484:"Oracle DB", 2967:"Symantec AV", 
+            3074:"XBOX Live", 3306:"MySQL", 3724:"World of Warcraft", 4664:"Google Desktop", 
+            5432:"PostgreSQL", 5900:"RFB/VNC Server", 6665:'IRC', 6669:"IRC", 6666:"IRC", 
+            6667:'IRC', 6668:'IRC', 6881:"BitTorrent", 6999:"BitTorrent", 6970:"Quicktime", 
+            8086:"Kaspersky AV", 8087:"Kaspersky AV", 8222:'VMware Server', 9100:'PDL', 
+            10000:'BackupExec', 12345:'NetBus', 27374:"Sub7", 31337:'Back Orifice',
+            3389:'RDP', 445:'SMB', 2049:'NFS', 6379:'Redis', 27017:'MongoDB', 8443:'HTTPS alt',
+            9200:'Elasticserach', 11211:'Memcached'
+        }
+    def get_port_service(self, port_number) -> dict:
+        return self.common_ports.get(port_number, 'unknown')
