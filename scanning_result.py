@@ -51,8 +51,7 @@ class TcpSynScan:
         self.open_ports = []
         self.ip_addr = None
     def tcp_syc_scan(self) -> tuple[list[int], str]:
-        res, unans = sr( IP(dst=self.value)
-                /TCP(flags="S", dport=(self.ports)), timeout = 2, verbose = 0)
+        res, unans = sr( IP(dst=self.value)/TCP(flags="S", dport=(self.ports)), timeout = 2, verbose = 0)
         
         
 
@@ -81,8 +80,8 @@ class BannerGrabing(TcpSynScan):
                 s.settimeout(3)
                 s.connect((self.ip_addr, port))
                 banner.append((port, s.recv(1024).decode(errors="ignore").strip()))
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
             finally:
                 s.close()
 
@@ -106,7 +105,7 @@ class OuiMap:
     
 
 class TcpConnectScan:
-    def __init__(self, ip:str, ports: list[int]):
+    def __init__(self, ip, ports):
         self.ip = ip
         self.starting_point = ports[0]
         self.ending_point = ports[1]
@@ -117,11 +116,11 @@ class TcpConnectScan:
             try:
                 s = socket.socket()
                 s.settimeout(2)
-                result = s.connect_ex(self.ip, port)
+                result = s.connect_ex((self.ip, port))
                 if result == 0:
                     open_ports.append(port)
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
             finally:
                 s.close()
         

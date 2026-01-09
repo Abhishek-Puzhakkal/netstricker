@@ -105,13 +105,19 @@ elif user_input.scan:
         if result_value_checker == 'ip':
             print(f"your given ip is a valid one {user_input.scan}")
             print(f"port scanning started on {user_input.scan}")
+            
             port_scaning_result_windows = TcpConnectScan(user_input.scan, user_input.port)
             open_ports = port_scaning_result_windows.tcp_connect_scan()
             common_ports_and_serviceses = CommonPorts()
+            bannerss = BannerGrabing(user_input.scan, open_ports)
+            grabed_baner = bannerss.banner_grabing()
 
             if open_ports:
                 for ports in open_ports:
-                    print(f'{user_input.scan} : {ports} : {common_ports_and_serviceses.common_ports(ports)}')
+                    print(f'{user_input.scan} : {ports} : {common_ports_and_serviceses.get_port_service(ports)}')
+                if grabed_baner:
+                    print('banner grabbing worked ')
+                    print(grabed_baner)
             else:
                 print("i didn't got any open ports , my be my fault ")
         elif result_value_checker == "domain name":
@@ -124,7 +130,7 @@ elif user_input.scan:
 
             if open_ports:
                 for ports in open_ports:
-                    print(f'{user_input.scan} : {ports} : {common_ports_and_serviceses.common_ports(ports)}')
+                    print(f'{user_input.scan} : {ports} : {common_ports_and_serviceses.get_port_service(ports)}')
             else:
                 print("i didn't got any open ports , my be my fault ")
         else:
