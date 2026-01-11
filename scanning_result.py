@@ -122,7 +122,7 @@ class TcpConnectScan:
         for port in range(self.starting_point, self.ending_point+1):
             try:
                 s = socket.socket()
-                s.settimeout(2)
+                s.settimeout(3)
                 result = s.connect_ex((self.ip, port))
                 if result == 0:
                     open_ports.append(port)
@@ -138,7 +138,7 @@ class CommonPorts:
         self.common_ports = {
             7:"Echo", 20:"FTP data", 21:"FTP", 22:"SSH", 23:"Telnet",
             25:"SMTP", 53:"DNS", 69:"TFTP", 80:"HTTP", 88:"Kerberos", 
-            102:"lso-tsap", 110:"POP3", 135:"Microsoft-EPMAP", 137:"NetBIOS-ns", 
+            102:"Iso-tsap", 110:"POP3",111:"RPCBind", 135:"Microsoft-EPMAP", 137:"NetBIOS-ns", 
             139:"NetBIOS-ssn", 143:"IMAP4", 381:"HP Openview", 383:"HP Openview", 
             443:"HTTPS", 464:"kerberos", 465:"SMTPS", 587:"SMTP", 593:"Microsoft DCOM", 
             636:"LDAP over SSL", 691:"MS Exchange", 902:"VMware Server", 989:"FTP over ssl", 
@@ -151,7 +151,12 @@ class CommonPorts:
             8086:"Kaspersky AV", 8087:"Kaspersky AV", 8222:'VMware Server', 9100:'PDL', 
             10000:'BackupExec', 12345:'NetBus', 27374:"Sub7", 31337:'Back Orifice',
             3389:'RDP', 445:'SMB', 2049:'NFS', 6379:'Redis', 27017:'MongoDB', 8443:'HTTPS alt',
-            9200:'Elasticserach', 11211:'Memcached'
+            9200:'Elasticserach', 11211:'Memcached',1433: "MSSQL", 1521: "Oracle Listener", 
+            5985: "WinRM", 5986: "WinRM SSL",389:  "LDAP", 3268: "Global Catalog", 5060: "SIP",
+            5061: "SIP TLS", 5901: "VNC alt", 8080: "HTTP proxy / alt", 8000: "HTTP alt",
+            8888: "HTTP alt", 161:  "SNMP", 162:  "SNMP Trap", 514:  "Syslog", 873:  "Rsync"
         }
     def get_port_service(self, port_number) -> dict:
+
         return self.common_ports.get(port_number, 'unknown')
+    
