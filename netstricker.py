@@ -56,19 +56,12 @@ elif user_input.scan:
             common_ports_and_serviceses = CommonPorts()
             
             
-            if banners:
-                banner_lookuped = list()
-                for i in banners:
-                    print(f'{ip_addrr} : {i}')
-                    banner_lookuped.append(i[0])
-                unmapped = list(set(banner_lookuped) - set(scanning_result))
-
-                for i in unmapped:
-                    if i in scanning_result:
-                        print(f'{ip_addrr} : {i} : {common_ports_and_serviceses.common_ports(i)}')
-            else:
+            if scanning_result:
                 for port in scanning_result:
-                    print(f'{ip_addrr} : {port} : {common_ports_and_serviceses.common_ports(port)}')
+                    print(f"{ip_addrr} : {port} : {common_ports_and_serviceses.get_port_service(port)}")
+            else:
+                print("i didn't got any open ports , my be my fault ")
+
                 
                 
         elif result_value_checker == "domain name":
@@ -82,19 +75,11 @@ elif user_input.scan:
             common_ports_and_serviceses = CommonPorts()
             
             
-            if banners:
-                banner_lookuped = list()
-                for i in banners:
-                    print(f'{ip_addrr} : {i}')
-                    banner_lookuped.append(i[0])
-                unmapped = list(set(banner_lookuped) - set(scanning_result))
-
-                for i in unmapped:
-                    if i in scanning_result:
-                        print(f'{ip_addrr} : {i} : {common_ports_and_serviceses.common_ports(i)}')
-            else:
+            if scanning_result:
                 for port in scanning_result:
-                    print(f'{ip_addrr} : {port} : {common_ports_and_serviceses.common_ports(port)}')
+                    print(f"{ip_addrr} : {port} : {common_ports_and_serviceses.get_port_service(port)}")
+            else:
+                print("i didn't got any open ports , my be my fault ")
                 
         else:
             print(f"invalid user input {user_input.scan} is not a valid ip or doamin name ")
