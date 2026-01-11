@@ -1,5 +1,10 @@
 from scapy.all import*
 import socket
+from scapy.config import conf
+conf.route.resync()
+conf.verb = 0
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
 class LanScanning():
     def __init__(self, network):
@@ -36,7 +41,7 @@ class IcmpPingLanScanning():
             ip = received.src
             hosts_ip.append(ip)
         for ip in hosts_ip:
-            arp_replied, arp_un_replied = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst= ip), timeout=2)
+            arp_replied, arp_un_replied = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst= ip), timeout=2, verbose=False)
             for sent, received in arp_replied:
                 mac = received.hwsrc
                 hosts_with_ip_mac[ip] = mac
@@ -46,24 +51,26 @@ class IcmpPingLanScanning():
 
 class TcpSynScan:
     def __init__(self, value, ports):
-        self.ports = ports
+        self.starting_port = ports[0]
+        self.ending_port = ports[1]
         self.value = value
         self.open_ports = []
         self.ip_addr = None
     def tcp_syc_scan(self) -> tuple[list[int], str]:
-        res, unans = sr( IP(dst=self.value)/TCP(flags="S", dport=(self.ports)), timeout = 2, verbose = 0)
-        
-        
+        for port in range(self.starting_port, self.ending_port+1):
+            res, unans = sr( IP(dst=self.value)/TCP(flags="S", dport=(port)), timeout = 2, verbose = 0)
+            
+            
 
-        self.ip_addr = socket.gethostbyname(self.value)
+            self.ip_addr = socket.gethostbyname(self.value)
 
-        for sent, received in res:
-            if received.haslayer(TCP):
-                flags = received[TCP].flags
+            for sent, received in res:
+                if received.haslayer(TCP):
+                    flags = received[TCP].flags
 
-                
-                if flags & 0x12 == 0x12:
-                   self.open_ports.append(sent[TCP].dport)
+                    
+                    if flags & 0x12 == 0x12:
+                        self.open_ports.append(sent[TCP].dport)
 
         
         return self.open_ports, self.ip_addr

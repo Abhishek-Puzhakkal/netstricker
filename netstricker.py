@@ -33,7 +33,7 @@ if user_input.discover:
         oui_lookup = OuiMap()
         local_oui_db = oui_lookup.load_oui_database()
 
-        for ip, mac in icmp_result:
+        for ip, mac in icmp_result.items():
             oui_icmp_scanning = mac.upper().replace(":", "-")[0:8]
             mac_vendor = local_oui_db.get(oui_icmp_scanning)
 
