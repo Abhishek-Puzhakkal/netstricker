@@ -13,19 +13,19 @@ rich_console = Console()
 
 commands = argparse.ArgumentParser(description="NetStricker is simple Lan discoviering and ports scanning tool ",
                                    epilog= """
-                                        Usage :
+        Usage :
 
-                                            netstricker.py --discover <network range>  -> This is the commad for finding live hosts under Lan
-                                            netstricker.py --scan <target Ip or Domain name> --port <starting-port> <ending-port> -> This is the command for port scanning , and it will check all the ip's in between user provided starting and ending port
-                                        
-                                        Example usage:
+            netstricker.py --discover <network range>  -> This is the commad for finding live hosts under Lan
+            netstricker.py --scan <target Ip or Domain name> --port <starting-port> <ending-port> -> This is the command for port scanning , and it will check all the ip's in between user provided starting and ending port
+        
+        Example usage:
 
-                                            netstricker.py --discover 192.168.1.0/24
-                                            netstricker.py --scan 192.168.1.4 --port 1 500
+            netstricker.py --discover 192.168.1.0/24
+            netstricker.py --scan 192.168.1.4 --port 1 500
 
-                                        Note :- Anything else other than above mentioned example will show a error message 
+        Note :- Anything else other than above mentioned example will show a error message 
 
-                                        Author: Abhishek Puzhakkal
+        Author: Abhishek Puzhakkal
                                         """ 
                                         ,formatter_class=argparse.RawDescriptionHelpFormatter)
 
