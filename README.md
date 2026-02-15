@@ -8,13 +8,13 @@
 
 
 
-	**NetStricker is a simple python based Lan discovery and port scanning tool .**
+**NetStricker is a simple python based Lan discovery and port scanning tool .**
 
 **It perform discovering hosts under Lan , OUI lookup of hosts under Lan ,  port scanning and printing open-ports and it's default service running on each open ports (no banner grabbing)**
 
 
 
-	**Also it work well in Linux environment , On windows it Definitely stuck or may take longer time or give incorrect answers , So I recommend to use on Linux environment , Once again it is a basic tool not like nmap or something like that , just a simple tool , I created it as a warm up project to get confidence for my future projects** 
+**Also it work well in Linux environment , On windows it Definitely stuck or may take longer time or give incorrect answers , So I recommend to use on Linux environment , Once again it is a basic tool not like nmap or something like that , just a simple tool , I created it as a warm up project to get confidence for my future projects** 
 
 
 
@@ -60,25 +60,25 @@
 
 
 
-**git clone https://github.com/Abhishek-Puzhakkal/netstricker.git**
+    git clone https://github.com/Abhishek-Puzhakkal/netstricker.git
 
 
 
-**cd netstricker**
+	cd netstricker
 
 
 
-**python -m venv venv**
+	python -m venv venv
 
 
 
-**source venv/bin/activate      # Linux**
+	source venv/bin/activate      # Linux**
 
-**venv\\Scripts\\activate         # Windows**
+	venv\\Scripts\\activate         # Windows**
 
 
 
-**pip install -r requirements.txt**
+	pip install -r requirements.txt**
 
 ## 
 
@@ -90,7 +90,7 @@
 
 
 
-	**python netstricker.py --discover 192.168.1.0/24  #This command to discover hosts under the Lan** 
+		python netstricker.py --discover 192.168.1.0/24  #This command to discover hosts under the Lan** 
 
 
 
